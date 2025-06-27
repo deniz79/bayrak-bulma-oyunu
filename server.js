@@ -3,12 +3,11 @@ const http = require('http');
 const socketIo = require('socket.io');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
+const { Low, JSONFile } = require('lowdb');
 
 let db;
 
 async function startServer() {
-  // Veritabanını dinamik olarak import et ve başlat
-  const { Low, JSONFile } = await import('lowdb');
   const adapter = new JSONFile('db.json');
   const defaultData = { players: [] };
   db = new Low(adapter, defaultData);
