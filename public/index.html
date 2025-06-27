@@ -18,6 +18,12 @@
             </div>
             
             <div class="menu-options">
+                <div class="option-card" onclick="startSinglePlayer()">
+                    <i class="fas fa-user"></i>
+                    <h3>Tek Kişilik Oyna</h3>
+                    <p>Bilgisayara karşı yeteneklerini sına</p>
+                </div>
+                
                 <div class="option-card" onclick="showCreateRoom()">
                     <i class="fas fa-plus-circle"></i>
                     <h3>Oda Oluştur</h3>
@@ -29,6 +35,18 @@
                     <h3>Odaya Katıl</h3>
                     <p>Mevcut bir odaya katıl ve oyuna başla</p>
                 </div>
+
+                <div class="option-card" onclick="showLeaderboard()">
+                    <i class="fas fa-trophy"></i>
+                    <h3>Dünya Sıralaması</h3>
+                    <p>En yüksek skorları gör</p>
+                </div>
+
+                <div class="option-card" onclick="showStore()">
+                    <i class="fas fa-store"></i>
+                    <h3>Mağaza</h3>
+                    <p>Puanlarınla yeni temalar al</p>
+                </div>
             </div>
             
             <div class="game-info">
@@ -39,6 +57,48 @@
                     <li>Hızlı cevap vererek bonus puan kazan</li>
                     <li>En yüksek puanı alan oyuncu kazanır!</li>
                 </ul>
+            </div>
+            
+            <div class="footer">
+                <p>© 2024 Mehmet Deniz Yetik</p>
+            </div>
+        </div>
+
+        <!-- Mağaza Ekranı -->
+        <div id="store-screen" class="screen">
+            <div class="header">
+                <h2><i class="fas fa-store"></i> Mağaza</h2>
+                <button class="back-btn" onclick="showMainMenu()">
+                    <i class="fas fa-arrow-left"></i> Geri
+                </button>
+            </div>
+
+            <div class="player-points-container">
+                <h3><i class="fas fa-coins"></i> Puanların:</h3>
+                <span id="player-points" class="player-points">0</span>
+            </div>
+            
+            <div id="theme-list" class="theme-list">
+                <!-- Temalar buraya yüklenecek -->
+            </div>
+            
+            <div class="footer">
+                <p>© 2024 Mehmet Deniz Yetik</p>
+            </div>
+        </div>
+
+        <!-- Dünya Sıralaması -->
+        <div id="leaderboard-screen" class="screen">
+            <div class="header">
+                <h2><i class="fas fa-trophy"></i> Dünya Sıralaması</h2>
+                <button class="back-btn" onclick="showMainMenu()">
+                    <i class="fas fa-arrow-left"></i> Geri
+                </button>
+            </div>
+            
+            <div id="leaderboard-list" class="leaderboard-list">
+                <!-- Sıralama buraya yüklenecek -->
+                <div class="loading-spinner"></div>
             </div>
             
             <div class="footer">

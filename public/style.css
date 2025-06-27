@@ -1,14 +1,99 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+:root {
+    --primary-bg: #f4f7f6;
+    --secondary-bg: #ffffff;
+    --header-bg-start: #667eea;
+    --header-bg-end: #764ba2;
+    --text-color: #4a5568;
+    --header-text-color: #ffffff;
+    --primary-btn-bg: #5a67d8;
+    --primary-btn-hover-bg: #4c51bf;
+    --secondary-btn-bg: #e2e8f0;
+    --secondary-btn-text: #4a5568;
+    --secondary-btn-hover-bg: #cbd5e0;
+    --card-bg: #ffffff;
+    --card-shadow: rgba(0, 0, 0, 0.05);
+    --icon-color: #5a67d8;
+    --winner-bg: #f0fff4;
+    --winner-border: #9ae6b4;
+    --flag-bg: #edf2f7;
+    --correct-answer-color: #38a169;
+    --incorrect-answer-color: #e53e3e;
+
+    /* Tema önizleme renkleri */
+    --theme-dark-preview: linear-gradient(135deg, #2d3748, #1a202c);
+    --theme-forest-preview: linear-gradient(135deg, #48bb78, #2f855a);
+    --theme-ocean-preview: linear-gradient(135deg, #4299e1, #3182ce);
 }
 
+body.theme-dark {
+    --primary-bg: #1a202c;
+    --secondary-bg: #2d3748;
+    --header-bg-start: #2d3748;
+    --header-bg-end: #1a202c;
+    --text-color: #e2e8f0;
+    --header-text-color: #ffffff;
+    --primary-btn-bg: #4299e1;
+    --primary-btn-hover-bg: #3182ce;
+    --secondary-btn-bg: #4a5568;
+    --secondary-btn-text: #e2e8f0;
+    --secondary-btn-hover-bg: #2d3748;
+    --card-bg: #2d3748;
+    --card-shadow: rgba(255, 255, 255, 0.05);
+    --icon-color: #4299e1;
+    --winner-bg: #2f855a;
+    --winner-border: #68d391;
+    --flag-bg: #4a5568;
+    --correct-answer-color: #68d391;
+    --incorrect-answer-color: #fc8181;
+}
+
+body.theme-forest {
+    --primary-bg: #f0fff4;
+    --secondary-bg: #ffffff;
+    --header-bg-start: #48bb78;
+    --header-bg-end: #2f855a;
+    --text-color: #2f855a;
+    --header-text-color: #ffffff;
+    --primary-btn-bg: #38a169;
+    --primary-btn-hover-bg: #2f855a;
+    --secondary-btn-bg: #c6f6d5;
+    --secondary-btn-text: #2f855a;
+    --secondary-btn-hover-bg: #9ae6b4;
+    --card-bg: #ffffff;
+    --card-shadow: rgba(0, 0, 0, 0.07);
+    --icon-color: #38a169;
+    --winner-bg: #c6f6d5;
+    --winner-border: #68d391;
+    --flag-bg: #edf2f7;
+}
+
+body.theme-ocean {
+    --primary-bg: #ebf8ff;
+    --secondary-bg: #ffffff;
+    --header-bg-start: #4299e1;
+    --header-bg-end: #3182ce;
+    --text-color: #2b6cb0;
+    --header-text-color: #ffffff;
+    --primary-btn-bg: #3182ce;
+    --primary-btn-hover-bg: #2b6cb0;
+    --secondary-btn-bg: #bee3f8;
+    --secondary-btn-text: #2b6cb0;
+    --secondary-btn-hover-bg: #90cdf4;
+    --card-bg: #ffffff;
+    --card-shadow: rgba(0, 0, 0, 0.06);
+    --icon-color: #3182ce;
+    --winner-bg: #bee3f8;
+    --winner-border: #63b3ed;
+    --flag-bg: #e2e8f0;
+}
+
+/* General Body Styles */
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    color: #333;
+    margin: 0;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
@@ -38,26 +123,26 @@ body {
 
 .header {
     text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--header-bg-start), var(--header-bg-end));
+    color: var(--header-text-color);
     margin-bottom: 40px;
 }
 
 .header h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #4a5568;
     margin-bottom: 10px;
 }
 
 .header h2 {
     font-size: 2rem;
     font-weight: 600;
-    color: #4a5568;
     margin-bottom: 10px;
 }
 
 .header p {
     font-size: 1.1rem;
-    color: #718096;
 }
 
 .back-btn {
@@ -87,14 +172,14 @@ body {
 }
 
 .option-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--card-bg);
     color: white;
     padding: 30px;
     border-radius: 15px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px var(--card-shadow);
 }
 
 .option-card:hover {
@@ -198,22 +283,23 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-color: var(--primary-btn-bg);
     color: white;
 }
 
 .btn-primary:hover {
+    background-color: var(--primary-btn-hover-bg);
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
 }
 
 .btn-secondary {
-    background: #e2e8f0;
-    color: #4a5568;
+    background-color: var(--secondary-btn-bg);
+    color: var(--secondary-btn-text);
 }
 
 .btn-secondary:hover {
-    background: #cbd5e0;
+    background-color: var(--secondary-btn-hover-bg);
     transform: translateY(-2px);
 }
 
@@ -538,8 +624,8 @@ body {
 }
 
 .final-result-item.winner {
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-    border: 3px solid #f6ad55;
+    background: var(--winner-bg);
+    border: 2px solid var(--winner-border);
 }
 
 .final-result-item .position {
@@ -724,4 +810,132 @@ body {
         font-size: 0.75rem;
         padding: 6px 0;
     }
+}
+
+/* Leaderboard Styles */
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    background: var(--secondary-bg);
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px var(--card-shadow);
+    transition: all 0.2s ease-in-out;
+}
+
+.leaderboard-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.leaderboard-item .rank {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #667eea;
+    width: 50px;
+    text-align: center;
+}
+
+.leaderboard-item .name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #4a5568;
+    flex-grow: 1;
+    margin-left: 20px;
+}
+
+.leaderboard-item .score {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #38a169;
+}
+
+.empty-message {
+    text-align: center;
+    color: #718096;
+    font-size: 1.1rem;
+    padding: 40px;
+}
+
+/* Store Styles */
+.player-points-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    background: var(--secondary-bg);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--card-shadow);
+}
+
+.player-points-container .fas {
+    color: #f6e05e; /* Gold coin color */
+    font-size: 1.8rem;
+}
+
+.player-points {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.theme-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.theme-item {
+    background: var(--secondary-bg);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px var(--card-shadow);
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+}
+
+.theme-item.active {
+    border-color: var(--icon-color);
+    transform: scale(1.05);
+}
+
+.theme-item:hover {
+    transform: translateY(-5px);
+}
+
+.theme-preview {
+    height: 100px;
+}
+
+.theme-info {
+    padding: 20px;
+    text-align: center;
+}
+
+.theme-info h3 {
+    margin: 0 0 10px;
+    color: var(--text-color);
+}
+
+.theme-info p {
+    margin: 0;
+    color: var(--correct-answer-color);
+    font-weight: 600;
+}
+
+.theme-item .btn {
+    width: calc(100% - 40px);
+    margin: 0 20px 20px;
+    display: block;
 } 

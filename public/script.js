@@ -24,8 +24,12 @@ const screens = {
     waitingRoom: document.getElementById('waiting-room'),
     gameScreen: document.getElementById('game-screen'),
     roundResult: document.getElementById('round-result'),
-    gameEnd: document.getElementById('game-end')
+    gameEnd: document.getElementById('game-end'),
+    leaderboardScreen: document.getElementById('leaderboard-screen'),
+    storeScreen: document.getElementById('store-screen')
 };
+
+let AppThemes = []; // Temaları ve css sınıflarını saklamak için
 
 // Ekran değiştirme fonksiyonu
 function showScreen(screenId) {
@@ -371,9 +375,38 @@ function closeError() {
     document.getElementById('error-modal').style.display = 'none';
 }
 
-// Socket.IO event listeners
+// Liderlik tablosunu göster
+function showLeaderboard() {
+    showScreen('leaderboardScreen');
+    const list = document.getElementById('leaderboard-list');
+    list.innerHTML = '<div class="loading-spinner"></div>'; // İstek öncesi yükleniyor animasyonu
+    socket.emit('get-leaderboard');
+}
+
+function showStore() {
+    showScreen('storeScreen');
+    const themeList = document.getElementById('theme-list');
+    themeList.innerHTML = '<div class="loading-spinner"></div>';
+    // Oyuncu adının ayarlandığından emin ol
+    if (gameState.playerName) {
+        socket.emit('get-store-data', { playerName: gameState.playerName });
+    } else {
+        // Eğer oyuncu adı yoksa, ana menüden bir oyun başlatmasını iste
+        themeList.innerHTML = '<p class="empty-message">Mağazayı görmek için önce bir oyuncu adı belirleyerek oyuna başlamalısın.</p>';
+    }
+}
+
+function buyTheme(themeId) {
+    socket.emit('purchase-theme', { playerName: gameState.playerName, themeId: themeId });
+}
+
+function activateTheme(themeId) {
+    socket.emit('set-active-theme', { playerName: gameState.playerName, themeId: themeId });
+}
+
+// Socket olay dinleyicileri
 socket.on('connect', () => {
-    console.log('Sunucuya bağlandı');
+    console.log('Sunucuya bağlandı:', socket.id);
 });
 
 socket.on('error', (data) => {
@@ -416,6 +449,21 @@ socket.on('game-finished', (data) => {
     showGameEnd(data);
 });
 
+socket.on('store-data', (data) => {
+    AppThemes = data.themes; // Tema listesini kaydet
+    updateStoreUI(data.themes, data.playerData);
+    applyTheme(data.playerData.activeTheme);
+});
+
+socket.on('notification', (data) => {
+    // Daha şık bir bildirim için gelecekte geliştirilebilir
+    alert(data.message);
+});
+
+socket.on('leaderboard-data', (players) => {
+    updateLeaderboardUI(players);
+});
+
 // Enter tuşu ile form gönderme
 document.addEventListener('DOMContentLoaded', () => {
     // Oda oluşturma formu
@@ -450,3 +498,108 @@ document.addEventListener('DOMContentLoaded', () => {
 window.onload = () => {
     showMainMenu();
 };
+
+function startSinglePlayer() {
+    const playerName = prompt("Lütfen oyuncu adınızı girin:");
+    if (playerName && playerName.trim() !== "") {
+        gameState.playerName = playerName.trim();
+        socket.emit('start-single-player', { playerName: gameState.playerName });
+    }
+}
+
+function updateLeaderboardUI(players) {
+    const list = document.getElementById('leaderboard-list');
+    list.innerHTML = ''; // Listeyi temizle
+
+    if (!players || players.length === 0) {
+        list.innerHTML = '<p class="empty-message">Sıralamada henüz kimse yok. Oynayıp ilk sırayı kap!</p>';
+        return;
+    }
+
+    players.forEach((player, index) => {
+        const item = document.createElement('div');
+        item.className = 'leaderboard-item';
+
+        const rank = document.createElement('span');
+        rank.className = 'rank';
+        rank.textContent = `${index + 1}`;
+        if (index === 0) rank.textContent = '🥇';
+        if (index === 1) rank.textContent = '🥈';
+        if (index === 2) rank.textContent = '🥉';
+
+        const name = document.createElement('span');
+        name.className = 'name';
+        name.textContent = player.name;
+
+        const score = document.createElement('span');
+        score.className = 'score';
+        score.textContent = `${player.totalScore} Puan`;
+
+        item.appendChild(rank);
+        item.appendChild(name);
+        item.appendChild(score);
+        list.appendChild(item);
+    });
+}
+
+function updateStoreUI(themes, playerData) {
+    const pointsEl = document.getElementById('player-points');
+    pointsEl.textContent = playerData.totalScore;
+
+    const themeList = document.getElementById('theme-list');
+    themeList.innerHTML = '';
+
+    themes.forEach(theme => {
+        if (theme.id === 'default') return; // Varsayılan temayı mağazada gösterme
+
+        const isOwned = playerData.purchasedThemes.includes(theme.id);
+        const isActive = playerData.activeTheme === theme.id;
+
+        const item = document.createElement('div');
+        item.className = 'theme-item';
+        if (isActive) {
+            item.classList.add('active');
+        }
+
+        item.innerHTML = `
+            <div class="theme-preview" style="background: var(--theme-${theme.id}-preview, #ccc);"></div>
+            <div class="theme-info">
+                <h3>${theme.name}</h3>
+                <p>${theme.price} Puan</p>
+            </div>
+            <button id="btn-${theme.id}" class="btn"></button>
+        `;
+        
+        themeList.appendChild(item);
+
+        const btn = document.getElementById(`btn-${theme.id}`);
+        if (isActive) {
+            btn.textContent = 'Aktif';
+            btn.disabled = true;
+        } else if (isOwned) {
+            btn.textContent = 'Kullan';
+            btn.onclick = () => activateTheme(theme.id);
+            btn.classList.add('btn-secondary');
+        } else {
+            btn.textContent = 'Satın Al';
+            if (playerData.totalScore < theme.price) {
+                btn.disabled = true;
+                btn.textContent = 'Yetersiz Puan';
+            } else {
+                btn.onclick = () => buyTheme(theme.id);
+                btn.classList.add('btn-primary');
+            }
+        }
+    });
+}
+
+function applyTheme(activeThemeId) {
+    const theme = AppThemes.find(t => t.id === activeThemeId);
+    if (!theme) return;
+
+    // Önceki tema sınıflarını temizle
+    document.body.className = '';
+    
+    // Yeni temayı uygula
+    document.body.classList.add(theme.cssClass);
+}
