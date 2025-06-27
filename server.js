@@ -3,17 +3,8 @@ const http = require('http');
 const socketIo = require('socket.io');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
-const { Low, JSONFile } = require('lowdb');
-
-let db;
 
 async function startServer() {
-  const adapter = new JSONFile('db.json');
-  const defaultData = { players: [] };
-  db = new Low(adapter, defaultData);
-  await db.read();
-  console.log('Veritabanı başarıyla yüklendi.');
-
   const app = express();
   const server = http.createServer(app);
   const io = new socketIo(server);
@@ -26,14 +17,6 @@ async function startServer() {
   // Oyun odaları ve oyuncular (hafızada tutulacak)
   const rooms = new Map();
   const players = new Map();
-
-  // Mağaza ürünleri
-  const THEMES = [
-    { id: 'default', name: 'Varsayılan', price: 0, cssClass: 'theme-default' },
-    { id: 'dark', name: 'Karanlık Mod', price: 500, cssClass: 'theme-dark' },
-    { id: 'forest', name: 'Orman Esintisi', price: 750, cssClass: 'theme-forest' },
-    { id: 'ocean', name: 'Okyanus Ferahlığı', price: 750, cssClass: 'theme-ocean' }
-  ];
 
   // Ülke verileri
   const countries = [
@@ -62,33 +45,6 @@ async function startServer() {
     };
     rooms.set(roomId, room);
     return roomId;
-  }
-  
-  // Oyuncu skorlarını veritabanında güncelleme
-  async function updatePlayerScores(results) {
-    try {
-      await db.read();
-      results.forEach(result => {
-        if (result.name === 'Bot') return; 
-
-        let playerInDb = db.data.players.find(p => p.name === result.name);
-        if (playerInDb) {
-          playerInDb.totalScore += result.score;
-        } else {
-          db.data.players.push({
-            id: uuidv4(),
-            name: result.name,
-            totalScore: result.score,
-            purchasedThemes: ['default'],
-            activeTheme: 'default'
-          });
-        }
-      });
-      await db.write();
-      console.log('Skorlar veritabanına kaydedildi.');
-    } catch (error) {
-      console.error('Skorlar kaydedilirken hata oluştu:', error);
-    }
   }
 
   // Oyunu başlatma
@@ -207,8 +163,6 @@ async function startServer() {
       name: player.name,
       score: room.scores[player.id] || 0
     })).sort((a, b) => b.score - a.score);
-
-    updatePlayerScores(finalResults);
   
     io.to(roomId).emit('game-finished', {
       results: finalResults,
@@ -277,81 +231,6 @@ async function startServer() {
       
       if (allAnswered) {
         setTimeout(() => evaluateRound(playerInfo.roomId), 1000);
-      }
-    });
-
-    // Mağaza verisi isteği
-    socket.on('get-store-data', async (data) => {
-      if (!data || !data.playerName) return;
-      await db.read();
-      let player = db.data.players.find(p => p.name === data.playerName);
-      
-      // Eğer oyuncu bir şekilde DB'de yoksa, oluştur
-      if (!player) {
-        player = {
-          id: uuidv4(),
-          name: data.playerName,
-          totalScore: 0,
-          purchasedThemes: ['default'],
-          activeTheme: 'default'
-        };
-        db.data.players.push(player);
-        await db.write();
-      }
-
-      socket.emit('store-data', {
-        themes: THEMES,
-        playerData: player
-      });
-    });
-
-    // Tema satın alma
-    socket.on('purchase-theme', async (data) => {
-      if (!data || !data.playerName || !data.themeId) return;
-      
-      const theme = THEMES.find(t => t.id === data.themeId);
-      if (!theme) return socket.emit('error', { message: 'Tema bulunamadı.' });
-
-      await db.read();
-      let player = db.data.players.find(p => p.name === data.playerName);
-      if (!player) return socket.emit('error', { message: 'Oyuncu bulunamadı.' });
-
-      if (player.totalScore < theme.price) return socket.emit('error', { message: 'Yetersiz puan.' });
-      if (player.purchasedThemes.includes(theme.id)) return socket.emit('error', { message: 'Bu temaya zaten sahipsin.' });
-
-      player.totalScore -= theme.price;
-      player.purchasedThemes.push(theme.id);
-      await db.write();
-
-      socket.emit('store-data', { themes: THEMES, playerData: player });
-      socket.emit('notification', { message: `${theme.name} başarıyla satın alındı!` });
-    });
-
-    // Aktif tema belirleme
-    socket.on('set-active-theme', async (data) => {
-      if (!data || !data.playerName || !data.themeId) return;
-      
-      await db.read();
-      let player = db.data.players.find(p => p.name === data.playerName);
-      if (!player) return socket.emit('error', { message: 'Oyuncu bulunamadı.' });
-
-      if (!player.purchasedThemes.includes(data.themeId)) return socket.emit('error', { message: 'Bu temaya sahip değilsin.'});
-
-      player.activeTheme = data.themeId;
-      await db.write();
-      
-      const activeTheme = THEMES.find(t => t.id === player.activeTheme);
-      socket.emit('store-data', { themes: THEMES, playerData: player });
-      socket.emit('notification', { message: `${activeTheme.name} teması aktifleştirildi!` });
-    });
-
-    socket.on('get-leaderboard', async () => {
-      try {
-        await db.read();
-        const topPlayers = db.data.players.sort((a, b) => b.totalScore - a.totalScore).slice(0, 10);
-        socket.emit('leaderboard-data', topPlayers);
-      } catch (error) {
-        console.error('Liderlik tablosu alınırken hata:', error);
       }
     });
 
