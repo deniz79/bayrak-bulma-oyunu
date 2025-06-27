@@ -207,7 +207,6 @@ function startNewRound(roundData) {
         const optionBtn = document.createElement('button');
         optionBtn.className = 'option-btn';
         optionBtn.innerHTML = `
-            <span>${option.flag}</span>
             <span>${option.name}</span>
         `;
         
@@ -230,7 +229,7 @@ function selectAnswer(answer) {
     // Seçilen butonu işaretle
     const optionBtns = document.querySelectorAll('.option-btn');
     optionBtns.forEach(btn => {
-        const optionName = btn.querySelector('span:last-child').textContent;
+        const optionName = btn.querySelector('span').textContent;
         if (optionName === answer) {
             btn.classList.add('selected');
         }
@@ -450,4 +449,4 @@ document.addEventListener('DOMContentLoaded', () => {
 // Sayfa yüklendiğinde ana menüyü göster
 window.onload = () => {
     showMainMenu();
-}; 
+};
