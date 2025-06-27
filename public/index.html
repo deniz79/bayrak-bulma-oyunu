@@ -1,295 +1,86 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bayrak Bulma Oyunu</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bayrak Bulma Oyunu</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Ana Menü -->
-        <div id="main-menu" class="screen active">
-            <div class="header">
-                <h1><i class="fas fa-flag"></i> Bayrak Bulma Oyunu</h1>
-                <p>Ülke bayraklarını tanıyabilir misin?</p>
-            </div>
-            
-            <div class="menu-options">
-                <div class="option-card" onclick="startSinglePlayer()">
-                    <i class="fas fa-user"></i>
-                    <h3>Tek Kişilik Oyna</h3>
-                    <p>Bilgisayara karşı yeteneklerini sına</p>
-                </div>
-                
-                <div class="option-card" onclick="showCreateRoom()">
-                    <i class="fas fa-plus-circle"></i>
-                    <h3>Oda Oluştur</h3>
-                    <p>Yeni bir oyun odası oluştur ve arkadaşını davet et</p>
-                </div>
-                
-                <div class="option-card" onclick="showJoinRoom()">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <h3>Odaya Katıl</h3>
-                    <p>Mevcut bir odaya katıl ve oyuna başla</p>
-                </div>
-
-                <div class="option-card" onclick="showLeaderboard()">
-                    <i class="fas fa-trophy"></i>
-                    <h3>Dünya Sıralaması</h3>
-                    <p>En yüksek skorları gör</p>
-                </div>
-
-                <div class="option-card" onclick="showStore()">
-                    <i class="fas fa-store"></i>
-                    <h3>Mağaza</h3>
-                    <p>Puanlarınla yeni temalar al</p>
-                </div>
-            </div>
-            
-            <div class="game-info">
-                <h3><i class="fas fa-info-circle"></i> Nasıl Oynanır?</h3>
-                <ul>
-                    <li>10 farklı ülke bayrağı gösterilecek</li>
-                    <li>Her bayrak için 4 seçenek arasından doğru ülkeyi seç</li>
-                    <li>Hızlı cevap vererek bonus puan kazan</li>
-                    <li>En yüksek puanı alan oyuncu kazanır!</li>
-                </ul>
-            </div>
-            
-            <div class="footer">
-                <p>© 2024 Mehmet Deniz Yetik</p>
-            </div>
-        </div>
-
-        <!-- Mağaza Ekranı -->
-        <div id="store-screen" class="screen">
-            <div class="header">
-                <h2><i class="fas fa-store"></i> Mağaza</h2>
-                <button class="back-btn" onclick="showMainMenu()">
-                    <i class="fas fa-arrow-left"></i> Geri
-                </button>
-            </div>
-
-            <div class="player-points-container">
-                <h3><i class="fas fa-coins"></i> Puanların:</h3>
-                <span id="player-points" class="player-points">0</span>
-            </div>
-            
-            <div id="theme-list" class="theme-list">
-                <!-- Temalar buraya yüklenecek -->
-            </div>
-            
-            <div class="footer">
-                <p>© 2024 Mehmet Deniz Yetik</p>
-            </div>
-        </div>
-
-        <!-- Dünya Sıralaması -->
-        <div id="leaderboard-screen" class="screen">
-            <div class="header">
-                <h2><i class="fas fa-trophy"></i> Dünya Sıralaması</h2>
-                <button class="back-btn" onclick="showMainMenu()">
-                    <i class="fas fa-arrow-left"></i> Geri
-                </button>
-            </div>
-            
-            <div id="leaderboard-list" class="leaderboard-list">
-                <!-- Sıralama buraya yüklenecek -->
-                <div class="loading-spinner"></div>
-            </div>
-            
-            <div class="footer">
-                <p>© 2024 Mehmet Deniz Yetik</p>
-            </div>
-        </div>
-
-        <!-- Oda Oluşturma -->
-        <div id="create-room" class="screen">
-            <div class="header">
-                <h2><i class="fas fa-plus-circle"></i> Oda Oluştur</h2>
-                <button class="back-btn" onclick="showMainMenu()">
-                    <i class="fas fa-arrow-left"></i> Geri
-                </button>
-            </div>
-            
-            <div class="form-container">
-                <div class="input-group">
-                    <label for="player-name">Oyuncu Adın:</label>
-                    <input type="text" id="player-name" placeholder="Adınızı girin" maxlength="20">
-                </div>
-                
-                <button class="btn btn-primary" onclick="createRoom()">
-                    <i class="fas fa-play"></i> Oda Oluştur ve Başla
-                </button>
-            </div>
-            
-            <div class="footer">
-                <p>© 2024 Mehmet Deniz Yetik</p>
-            </div>
-        </div>
-
-        <!-- Odaya Katılma -->
-        <div id="join-room" class="screen">
-            <div class="header">
-                <h2><i class="fas fa-sign-in-alt"></i> Odaya Katıl</h2>
-                <button class="back-btn" onclick="showMainMenu()">
-                    <i class="fas fa-arrow-left"></i> Geri
-                </button>
-            </div>
-            
-            <div class="form-container">
-                <div class="input-group">
-                    <label for="join-player-name">Oyuncu Adın:</label>
-                    <input type="text" id="join-player-name" placeholder="Adınızı girin" maxlength="20">
-                </div>
-                
-                <div class="input-group">
-                    <label for="room-id">Oda Kodu:</label>
-                    <input type="text" id="room-id" placeholder="8 haneli oda kodunu girin" maxlength="8">
-                </div>
-                
-                <button class="btn btn-primary" onclick="joinRoom()">
-                    <i class="fas fa-sign-in-alt"></i> Odaya Katıl
-                </button>
-            </div>
-            
-            <div class="footer">
-                <p>© 2024 Mehmet Deniz Yetik</p>
-            </div>
-        </div>
-
-        <!-- Oda Bekleme -->
-        <div id="waiting-room" class="screen">
-            <div class="header">
-                <h2><i class="fas fa-users"></i> Oda Bekleme</h2>
-                <div class="room-info">
-                    <p>Oda Kodu: <span id="room-code" class="room-code"></span></p>
-                    <button class="btn btn-secondary" onclick="copyRoomCode()">
-                        <i class="fas fa-copy"></i> Kopyala
-                    </button>
-                </div>
-            </div>
-            
-            <div class="players-container">
-                <h3>Oyuncular:</h3>
-                <div id="players-list" class="players-list">
-                    <!-- Oyuncular buraya eklenecek -->
-                </div>
-            </div>
-            
-            <div class="waiting-message">
-                <div class="loading-spinner"></div>
-                <p>İkinci oyuncu bekleniyor...</p>
-            </div>
-            
-            <div class="footer">
-                <p>© 2024 Mehmet Deniz Yetik</p>
-            </div>
-        </div>
-
-        <!-- Oyun Ekranı -->
-        <div id="game-screen" class="screen">
-            <div class="game-header">
-                <div class="game-info">
-                    <span class="round-info">Tur: <span id="current-round">1</span>/10</span>
-                    <span class="timer" id="timer">10</span>
-                </div>
-                
-                <div class="players-scores">
-                    <div id="player1-score" class="player-score">
-                        <span class="player-name">Oyuncu 1</span>
-                        <span class="score">0</span>
-                    </div>
-                    <div id="player2-score" class="player-score">
-                        <span class="player-name">Oyuncu 2</span>
-                        <span class="score">0</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="question-container">
-                <div class="flag-display">
-                    <div class="flag" id="current-flag">🏳️</div>
-                    <h3>Bu bayrak hangi ülkeye aittir?</h3>
-                </div>
-                
-                <div class="options-grid" id="options-grid">
-                    <!-- Seçenekler buraya eklenecek -->
-                </div>
-            </div>
-            
-            <div class="footer">
-                <p>© 2024 Mehmet Deniz Yetik</p>
-            </div>
-        </div>
-
-        <!-- Tur Sonucu -->
-        <div id="round-result" class="screen">
-            <div class="result-header">
-                <h2><i class="fas fa-trophy"></i> Tur Sonucu</h2>
-            </div>
-            
-            <div class="result-content">
-                <div class="correct-answer">
-                    <h3>Doğru Cevap:</h3>
-                    <div class="flag-answer">
-                        <span id="correct-flag">🏳️</span>
-                        <span id="correct-country">Ülke Adı</span>
-                    </div>
-                </div>
-                
-                <div class="players-results" id="players-results">
-                    <!-- Oyuncu sonuçları buraya eklenecek -->
-                </div>
-            </div>
-            
-            <div class="next-round-countdown">
-                <p>Sonraki tur <span id="countdown">3</span> saniye içinde başlayacak...</p>
-            </div>
-            
-            <div class="footer">
-                <p>© 2024 Mehmet Deniz Yetik</p>
-            </div>
-        </div>
-
-        <!-- Oyun Sonu -->
-        <div id="game-end" class="screen">
-            <div class="end-header">
-                <h2><i class="fas fa-crown"></i> Oyun Bitti!</h2>
-            </div>
-            
-            <div class="final-results" id="final-results">
-                <!-- Final sonuçları buraya eklenecek -->
-            </div>
-            
-            <div class="end-actions">
-                <button class="btn btn-primary" onclick="playAgain()">
-                    <i class="fas fa-redo"></i> Tekrar Oyna
-                </button>
-                <button class="btn btn-secondary" onclick="showMainMenu()">
-                    <i class="fas fa-home"></i> Ana Menü
-                </button>
-            </div>
-            
-            <div class="footer">
-                <p>© 2024 Mehmet Deniz Yetik</p>
-            </div>
-        </div>
-
-        <!-- Hata Mesajı -->
-        <div id="error-modal" class="modal">
-            <div class="modal-content">
-                <h3><i class="fas fa-exclamation-triangle"></i> Hata</h3>
-                <p id="error-message">Bir hata oluştu.</p>
-                <button class="btn btn-primary" onclick="closeError()">Tamam</button>
-            </div>
-        </div>
+  <div class="container">
+    <div id="main-menu" class="screen active">
+      <h1><i class="fas fa-flag"></i> Bayrak Bulma Oyunu</h1>
+      <p>Ülke bayraklarını tanıyabilir misin?</p>
+      <div class="menu-options">
+        <button onclick="startSinglePlayer()"><i class="fas fa-user"></i> Tek Kişilik Oyna</button>
+        <button onclick="showCreateRoom()"><i class="fas fa-plus-circle"></i> Oda Oluştur</button>
+        <button onclick="showJoinRoom()"><i class="fas fa-sign-in-alt"></i> Odaya Katıl</button>
+      </div>
     </div>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
+    <div id="create-room" class="screen">
+      <h2>Oda Oluştur</h2>
+      <input type="text" id="create-player-name" placeholder="Oyuncu Adı">
+      <button onclick="createRoom()">Oluştur</button>
+      <button onclick="showMainMenu()">Geri</button>
+    </div>
+    <div id="join-room" class="screen">
+      <h2>Odaya Katıl</h2>
+      <input type="text" id="join-player-name" placeholder="Oyuncu Adı">
+      <input type="text" id="join-room-id" placeholder="Oda Kodu">
+      <button onclick="joinRoom()">Katıl</button>
+      <button onclick="showMainMenu()">Geri</button>
+    </div>
+    <div id="waiting-room" class="screen">
+      <h2>Oda Bekleniyor</h2>
+      <p>Oda Kodu: <span id="waiting-room-id"></span></p>
+      <p>Oyuncular:</p>
+      <ul id="waiting-players"></ul>
+      <p>Diğer oyuncu bekleniyor...</p>
+      <button onclick="showMainMenu()">Vazgeç</button>
+    </div>
+    <div id="game-screen" class="screen">
+      <div class="game-header">
+        <span class="round-info">Tur: <span id="current-round">1</span>/10</span>
+        <span class="timer" id="timer">10</span>
+      </div>
+      <div class="flag-display">
+        <div class="flag" id="current-flag">🏳️</div>
+        <h3>Bu bayrak hangi ülkeye aittir?</h3>
+      </div>
+      <div class="options-grid" id="options-grid"></div>
+      <div class="players-scores" id="players-scores"></div>
+    </div>
+    <div id="round-result" class="screen">
+      <h2>Tur Sonucu</h2>
+      <div class="correct-answer">
+        <h3>Doğru Cevap:</h3>
+        <div class="flag-answer">
+          <span id="correct-flag">🏳️</span>
+          <span id="correct-country">Ülke Adı</span>
+        </div>
+      </div>
+      <div class="players-results" id="players-results"></div>
+      <div class="next-round-countdown">
+        <p>Sonraki tur <span id="countdown">3</span> saniye içinde başlayacak...</p>
+      </div>
+    </div>
+    <div id="game-end" class="screen">
+      <h2>Oyun Bitti!</h2>
+      <div class="final-results" id="final-results"></div>
+      <button onclick="playAgain()">Tekrar Oyna</button>
+      <button onclick="showMainMenu()">Ana Menü</button>
+    </div>
+    <div id="error-modal" class="modal">
+      <div class="modal-content">
+        <h3><i class="fas fa-exclamation-triangle"></i> Hata</h3>
+        <p id="error-message">Bir hata oluştu.</p>
+        <button onclick="closeError()">Tamam</button>
+      </div>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
 </body>
 </html> 
